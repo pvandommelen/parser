@@ -24,6 +24,9 @@ use PeterVanDommelen\Parser\Expression\Concatenated\ConcatenatedExpressionRewrit
 use PeterVanDommelen\Parser\Expression\Constant\ConstantExpression;
 use PeterVanDommelen\Parser\Expression\Constant\ConstantExpressionCompiler;
 use PeterVanDommelen\Parser\Expression\Constant\ConstantExpressionEmptyChecker;
+use PeterVanDommelen\Parser\Expression\EndOfString\EndOfStringCompiler;
+use PeterVanDommelen\Parser\Expression\EndOfString\EndOfStringEmptyChecker;
+use PeterVanDommelen\Parser\Expression\EndOfString\EndOfStringExpression;
 use PeterVanDommelen\Parser\Expression\ExpressionInterface;
 use PeterVanDommelen\Parser\Expression\Joined\JoinedExpression;
 use PeterVanDommelen\Parser\Expression\Joined\JoinedExpressionRewriter;
@@ -63,6 +66,7 @@ class ParserHelper
         $flatteners[RegexExpression::class] = new TerminateExpressionFlattener();
         $flatteners[NotExpression::class] = new NotExpressionFlattener();
         $flatteners[AnyExpression::class] = new TerminateExpressionFlattener();
+        $flatteners[EndOfStringExpression::class] = new TerminateExpressionFlattener();
         return $flatteners;
     }
 
@@ -82,6 +86,7 @@ class ParserHelper
         $empty_checkers[RegexExpression::class] = new RegexExpressionEmptyChecker();
         $empty_checkers[NotExpression::class] = new NotExpressionEmptyChecker();
         $empty_checkers[AnyExpression::class] = new NotExpressionEmptyChecker();
+        $empty_checkers[EndOfStringExpression::class] = new EndOfStringEmptyChecker();
 
         return $empty_checkers;
     }
@@ -102,6 +107,7 @@ class ParserHelper
             RegexExpression::class => new TerminateExpressionRewriter,
             AnyExpression::class => new TerminateExpressionRewriter,
             NotExpression::class => new NotExpressionRewriter(),
+            EndOfStringExpression::class => new TerminateExpressionRewriter(),
         ), $extra);
     }
 
@@ -120,6 +126,7 @@ class ParserHelper
             RegexExpression::class => new RegexExpressionCompiler(),
             AnyExpression::class => new NotExpressionCompiler($encoding),
             NotExpression::class => new NotExpressionCompiler($encoding),
+            EndOfStringExpression::class => new EndOfStringCompiler(),
         );
 
         return $compilers;
