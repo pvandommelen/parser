@@ -13,9 +13,6 @@ class LazyResult
      */
     public function getResult()
     {
-        if (memory_get_usage(true) > 5342177) {
-            throw new \Exception("Mem usage");
-        }
         if ($this->result === null) {
             throw new \Exception("Result is not yet set");
         }
