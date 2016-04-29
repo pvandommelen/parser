@@ -56,7 +56,7 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testPerformanceEscapedStringPregMatch() {
-        $regex = '/"(?:[^"\\\\]|\\\\.)*"/';
+        $regex = '"(?:[^"\\\\]|\\\\.)*"';
 
         $parser = new RegexParser($regex);
         $this->runParser($parser);
