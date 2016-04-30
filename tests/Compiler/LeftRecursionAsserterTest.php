@@ -8,6 +8,7 @@ use PeterVanDommelen\Parser\Asserter\HasNoLeftRecursionAsserter;
 use PeterVanDommelen\Parser\Expression\Alternative\AlternativeExpression;
 use PeterVanDommelen\Parser\Expression\Concatenated\ConcatenatedExpression;
 use PeterVanDommelen\Parser\Expression\Constant\ConstantExpression;
+use PeterVanDommelen\Parser\Expression\Repeater\RepeaterExpression;
 use PeterVanDommelen\Parser\ParserHelper;
 use PeterVanDommelen\Parser\Rewriter\InvalidExpressionException;
 
@@ -72,5 +73,17 @@ class LeftRecursionAsserterTest extends \PHPUnit_Framework_TestCase
             new ConstantExpression("a"),
             $this->getLeftRecursionExample()
         )));
+    }
+
+    public function testLeftRecursionRepeater() {
+        $this->expectException(InvalidExpressionException::class);
+
+        $expression = null;
+        $expression = new RepeaterExpression(new ConcatenatedExpression(array(
+            &$expression,
+            new ConstantExpression("a")
+        )));
+
+        $this->getChecker()->assertExpression($expression);
     }
 }

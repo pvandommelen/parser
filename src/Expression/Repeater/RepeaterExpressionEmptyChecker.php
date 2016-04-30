@@ -16,10 +16,13 @@ class RepeaterExpressionEmptyChecker implements PotentiallyEmptyCheckerInterface
     public function isPotentiallyEmpty(ExpressionInterface $expression)
     {
         /** @var $expression RepeaterExpression */
+        //because this method is also used to detect left recursion we always need to access the inner expression
+        $inner_expression_empty = $this->getRecursiveHandler()->isPotentiallyEmpty($expression->getExpression());
+
         if ($expression->getMinimum() === 0) {
             return true;
         }
-        if ($this->getRecursiveHandler()->isPotentiallyEmpty($expression->getExpression()) === true) {
+        if ($inner_expression_empty === true) {
             return true;
         }
         return false;

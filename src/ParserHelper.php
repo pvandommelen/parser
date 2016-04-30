@@ -138,8 +138,8 @@ class ParserHelper
         $expression_flattener = self::createFlattener();
         $potentially_empty_checker = self::createEmptyChecker();
         $compiler = new AsserterCompiler($compiler, new MultipleAsserter(array(
-            new HasNoEmptyRepeaterAsserter($expression_flattener, $potentially_empty_checker),
             new HasNoLeftRecursionAsserter($expression_flattener, $potentially_empty_checker),
+            new HasNoEmptyRepeaterAsserter($expression_flattener, $potentially_empty_checker),
         )));
 
         $extra_rewriters = array();

@@ -249,4 +249,15 @@ class RepeaterTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($result);
         $this->assertEquals(2, $result->getLength());
     }
+
+    public function testLeftRecursionRepeater() {
+        $this->expectException(InvalidExpressionException::class);
+
+        $expression = null;
+        $expression = new RepeaterExpression(new ConcatenatedExpression(array(
+            &$expression,
+            new ConstantExpression("a")
+        )));
+        ParserHelper::compile($expression)->parse("a");
+    }
 }
