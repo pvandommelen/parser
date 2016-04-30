@@ -13,12 +13,15 @@ class ConstantParser implements ParserInterface
     /** @var string */
     private $string;
 
+    private $result;
+
     /**
      * @param string $string
      */
     public function __construct($string)
     {
         $this->string = $string;
+        $this->result = new ConstantExpressionResult($string);
     }
 
     public function parse($string, ExpressionResultInterface $previous_result = null)
@@ -32,7 +35,7 @@ class ConstantParser implements ParserInterface
         if (StringUtil::slice($string, 0, strlen($constant)) !== $constant) {
             return null;
         }
-        return new ConstantExpressionResult($constant);
+        return $this->result;
     }
 
 }

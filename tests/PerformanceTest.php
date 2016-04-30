@@ -60,6 +60,15 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
 
         $parser = new RegexParser($regex);
         $this->runParser($parser);
+    }
+    
+    public function testConstantParser() {
+        $expression = new RepeaterExpression(new ConstantExpression("aa"));
+        $target = str_repeat("a", 100000);
 
+        $parser = ParserHelper::compile($expression);
+
+        $result = $parser->parse($target);
+        //var_dump(memory_get_peak_usage(true) / 1000000);
     }
 }
