@@ -74,4 +74,11 @@ class RegexParserTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($result);
         $this->assertEquals("\\", $result->getString());
     }
+
+    public function testAnchorAlternative() {
+        $parser = ParserHelper::compile(new RegexExpression("ab|cd"));
+
+        $result = $parser->parse("acd");
+        $this->assertNull($result);
+    }
 }
