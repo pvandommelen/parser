@@ -1,6 +1,10 @@
 {
     "name": "pvandommelen/parser",
     "description": "A recursive descent parser for PHP",
+    "require": {
+        "php": "~5.5 || ~7.0",
+        "ext-mbstring": "*"
+    },
     "require-dev": {
         "phpunit/phpunit": "5.3.*"
     },
