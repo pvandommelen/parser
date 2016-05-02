@@ -17,50 +17,49 @@ class GreedyRepeaterParser extends AbstractRepeaterParser
             return null;
         }
 
-        $position = 0;
-        for ($i = 0; $i < $length; $i += 1) {
-            $position += $part_results[$i]->getLength();
-        }
         $index = $length - 1;
 
-        $position -= $part_results[$index]->getLength();
+        //we need to backtrack the last result.
+        //find the position where the last entry starts
+        $position = $previous_result->getLength() - $part_results[$index]->getLength();
+
+        //backtrack that entry
         $last_part = $this->inner->parse(StringUtil::slice($string, $position), $part_results[$index]);
+
+
         if ($last_part === null) {
+            //it failed, our new result excludes this item. Still atleast the minimum?
             if ($index < $this->minimum) {
                 return null;
             }
             return new RepeaterExpressionResult(array_slice($part_results, 0, $index));
         }
+
+        //replace the entry
         $part_results[$index] = $last_part;
         return new RepeaterExpressionResult($part_results);
     }
 
     public function parse($string, ExpressionResultInterface $previous_result = null)
     {
-        if ($previous_result !== null && $previous_result instanceof RepeaterExpressionResult === false) {
-            throw new \Exception("Expected " . RepeaterExpressionResult::class);
-        }
-
+        /** @var RepeaterExpressionResult|null $previous_result */
         if ($previous_result !== null) {
-            /** @var RepeaterExpressionResult|null $previous_result */
             return $this->parseWithPreviousResult($string, $previous_result);
         }
 
         $part_results = array();
         $position = 0;
 
-        do {
+        while (count($part_results) < $this->maximum) {
             $current_part_result = $this->inner->parse(StringUtil::slice($string, $position), null);
 
-            while ($current_part_result !== null && $current_part_result->getLength() === 0) {
-                //if a part has no size, we immediately ask for the next one
-                $current_part_result = $this->inner->parse(StringUtil::slice($string, $position), $current_part_result);
+            if ($current_part_result === null) {
+                break;
             }
-            if ($current_part_result !== null) {
-                $part_results[] = $current_part_result;
-                $position += $current_part_result->getLength();
-            }
-        } while ($current_part_result !== null && count($part_results) !== $this->maximum);
+
+            $part_results[] = $current_part_result;
+            $position += $current_part_result->getLength();
+        }
 
         if (count($part_results) < $this->minimum) {
             return null;
