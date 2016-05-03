@@ -32,6 +32,10 @@ class RegexParser implements ParserInterface
         }
         $count = preg_match($this->regex, $string, $matches);
 
+        if ($count === false) {
+            throw new \Exception("Error occured in regex: " . preg_last_error());
+        }
+
         if ($count === 0) {
             return null;
         }
