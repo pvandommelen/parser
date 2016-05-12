@@ -55,27 +55,4 @@ class JoinedExpressionResultRewriter implements ExpressionResultRewriterInterfac
         return new JoinedExpressionResult($results, $seperators);
     }
 
-    public function rewriteExpressionResult(ExpressionResultInterface $result)
-    {
-        /** @var JoinedExpressionResult $result */
-
-        $parts = array_map(array($this->inner_result_rewriter, "rewriteExpressionResult"), $result->getResults());
-        $seperators = array_map(array($this->inner_result_rewriter, "rewriteExpressionResult"), $result->getSeperators());
-        if (count($parts) === 0) {
-            return new AlternativeExpressionResult(new ConstantExpressionResult(""), 1);
-        }
-
-        $repeater_parts = array();
-        foreach (array_slice($parts, 1) as $i => $part) {
-            $repeater_parts[] = new ConcatenatedExpressionResult(array(
-                $seperators[$i],
-                $part
-            ));
-        }
-        return new AlternativeExpressionResult(new ConcatenatedExpressionResult(array(
-            $parts[0],
-            new RepeaterExpressionResult($repeater_parts)
-        )), 0);
-    }
-
 }

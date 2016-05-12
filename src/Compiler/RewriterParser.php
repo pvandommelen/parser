@@ -29,7 +29,7 @@ class RewriterParser implements ParserInterface
     public function parse($string, ExpressionResultInterface $previous_result = null)
     {
         if ($previous_result !== null) {
-            $previous_result = $this->result_rewriter->rewriteExpressionResult($previous_result);
+            throw new \Exception("Cannot backtrack a rewritten expression");
         }
         $result = $this->parser->parse($string, $previous_result);
 

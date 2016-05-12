@@ -14,9 +14,4 @@ class LazyExpressionResultRewriter extends LazyResult implements ExpressionResul
         return $this->getResult()->reverseRewriteExpressionResult($result);
     }
 
-    public function rewriteExpressionResult(ExpressionResultInterface $result)
-    {
-        return $this->getResult()->rewriteExpressionResult($result);
-    }
-
 }

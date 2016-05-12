@@ -52,8 +52,11 @@ use PeterVanDommelen\Parser\ExpressionFlattener\TerminateExpressionFlattener;
 use PeterVanDommelen\Parser\Parser\ParserInterface;
 use PeterVanDommelen\Parser\PotentiallyEmptyChecker\PotentiallyEmptyChecker;
 use PeterVanDommelen\Parser\PotentiallyEmptyChecker\PotentiallyEmptyCheckerInterface;
-use PeterVanDommelen\Parser\Rewriter\ClassMapExpressionRewriter;
+use PeterVanDommelen\Parser\Rewriter\MultipleExpressionRewriter;
 use PeterVanDommelen\Parser\Rewriter\TerminateExpressionRewriter;
+use PeterVanDommelen\Parser\Simplifier\AlternativeSimplifier;
+use PeterVanDommelen\Parser\Simplifier\ConcatenatedFlattenSimplifier;
+use PeterVanDommelen\Parser\Simplifier\ConcatenatedSimplifier;
 
 class ParserHelper
 {
@@ -99,20 +102,25 @@ class ParserHelper
     }
 
     private static function createRewriterMap(array $extra = array()) {
-        return array_merge(array(
-            ConstantExpression::class => new TerminateExpressionRewriter(),
-            AlternativeExpression::class => new AlternativeExpressionRewriter(),
-            ConcatenatedExpression::class => new ConcatenatedExpressionRewriter(),
-            RepeaterExpression::class => new RepeaterExpressionRewriter(),
-            RegexExpression::class => new TerminateExpressionRewriter,
-            AnyExpression::class => new TerminateExpressionRewriter,
-            NotExpression::class => new NotExpressionRewriter(),
-            EndOfStringExpression::class => new TerminateExpressionRewriter(),
-        ), $extra);
+        return array_merge($extra, array(
+            //special
+            new JoinedExpressionRewriter(),
+
+            //optimizers
+            new ConcatenatedSimplifier(),
+            new AlternativeSimplifier(),
+            new ConcatenatedFlattenSimplifier(),
+
+            //basic
+            new AlternativeExpressionRewriter(),
+            new ConcatenatedExpressionRewriter(),
+            new RepeaterExpressionRewriter(),
+            new NotExpressionRewriter(),
+        ));
     }
 
     private static function createRewriter(array $extra = array()) {
-        return new ClassMapExpressionRewriter(self::createRewriterMap($extra));
+        return new MultipleExpressionRewriter(self::createRewriterMap($extra));
     }
 
     private static function createCompilerMap() {
@@ -143,9 +151,8 @@ class ParserHelper
         )));
 
         $extra_rewriters = array();
-        $extra_rewriters[JoinedExpression::class] = new JoinedExpressionRewriter();
         if ($grammar !== null) {
-            $extra_rewriters[NamedExpression::class] = new NamedExpressionRewriter($grammar);
+            $extra_rewriters[] = new NamedExpressionRewriter($grammar);
         }
         $rewriter = self::createRewriter($extra_rewriters);
         $compiler = new RewriterCompiler($compiler, $rewriter);

@@ -29,8 +29,6 @@ class NamedTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(3, $result->getLength());
         $this->assertEquals("abc", $result->getString());
-
-        $this->assertNull($parser->parse($target, $result));
     }
 
     public function testStringDoesNotMatch() {
@@ -93,8 +91,6 @@ class NamedTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(6, $result->getLength());
         $this->assertEquals("aaaabc", $result->getString());
-
-        $this->assertNull($parser->parse($target, $result));
     }
 
     public function testRightConcatRecursion2() {
@@ -115,8 +111,6 @@ class NamedTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(6, $result->getLength());
         $this->assertEquals("aaaabc", $result->getString());
-
-        $this->assertNull($parser->parse($target, $result));
     }
 
     public function testBraces() {

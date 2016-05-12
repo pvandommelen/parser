@@ -13,9 +13,4 @@ class TerminateExpressionResultRewriter implements ExpressionResultRewriterInter
         return $result;
     }
 
-    public function rewriteExpressionResult(ExpressionResultInterface $result)
-    {
-        return $result;
-    }
-
 }

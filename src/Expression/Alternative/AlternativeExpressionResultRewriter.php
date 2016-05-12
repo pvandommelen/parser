@@ -30,14 +30,4 @@ class AlternativeExpressionResultRewriter implements ExpressionResultRewriterInt
         return new AlternativeExpressionResult($original_result, $key);
     }
 
-    public function rewriteExpressionResult(ExpressionResultInterface $result)
-    {
-        /** @var \PeterVanDommelen\Parser\Expression\Alternative\AlternativeExpressionResult $result */
-
-        $key = $result->getKey();
-        $original_result = $this->alternative_rewriters[$key]->rewriteExpressionResult($result->getResult());
-
-        return new AlternativeExpressionResult($original_result, $key);
-    }
-
 }

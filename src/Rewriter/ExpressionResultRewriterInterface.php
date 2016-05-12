@@ -18,13 +18,5 @@ interface ExpressionResultRewriterInterface
      * @return ExpressionResultInterface
      */
     public function reverseRewriteExpressionResult(ExpressionResultInterface $result);
-
-    /**
-     * Takes results in the original form and transforms it to the rewritten expression result.
-     * Only used when backtracking with the exposed parser. Internally, backtracking uses the transformed structure.
-     *
-     * @param ExpressionResultInterface $result
-     * @return ExpressionResultInterface
-     */
-    public function rewriteExpressionResult(ExpressionResultInterface $result);
+    
 }

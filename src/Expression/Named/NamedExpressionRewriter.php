@@ -24,16 +24,15 @@ class NamedExpressionRewriter implements ExpressionRewriterInterface, RecursionA
         $this->grammar = $grammar;
     }
 
+    public function canRewrite(ExpressionInterface $expression)
+    {
+        return $expression instanceof NamedExpression === true;
+    }
+
     public function rewriteExpression(ExpressionInterface $expression)
     {
         /** @var NamedExpression $expression */
         return $this->getRecursiveHandler()->rewriteExpression($this->grammar->getExpression($expression->getName()));
-    }
-
-    public function getExpressionResultRewriter(ExpressionInterface $expression)
-    {
-        /** @var NamedExpression $expression */
-        return $this->getRecursiveHandler()->getExpressionResultRewriter($this->grammar->getExpression($expression->getName()));
     }
 
 

@@ -28,9 +28,20 @@ class RewriterCompiler implements CompilerInterface
 
     public function compile(ExpressionInterface $expression)
     {
-        $parser = $this->compiler->compile($this->rewriter->rewriteExpression($expression));
+        $rewritten_expression = $expression;
+        $result_rewriter = null;
+        if ($this->rewriter->canRewrite($expression) === true) {
+            $rewritten = $this->rewriter->rewriteExpression($expression);
+            $rewritten_expression = $rewritten->getExpression();
+            $result_rewriter = $rewritten->getResultRewriter();
+        }
+        $parser = $this->compiler->compile($rewritten_expression);
 
-        return new RewriterParser($parser, $this->rewriter->getExpressionResultRewriter($expression));
+        if ($result_rewriter === null) {
+            return $parser;
+        }
+
+        return new RewriterParser($parser, $result_rewriter);
     }
 
 }

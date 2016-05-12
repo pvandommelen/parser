@@ -67,41 +67,6 @@ class JoinedTest extends \PHPUnit_Framework_TestCase
         ), $result->getResults());
     }
 
-    public function testMultipleWithBacktracking() {
-        $parser = ParserHelper::compile(new JoinedExpression(new ConstantExpression("a"), new ConstantExpression(",")));
-        $target = "a,ab";
-
-        /** @var JoinedExpressionResult $result */
-        $result = $parser->parse($target);
-
-        $this->assertNotNull($result);
-        $this->assertEquals("a,a", $result->getString());
-
-        $this->assertEquals(array(
-            new ConstantExpressionResult("a"),
-            new ConstantExpressionResult("a"),
-        ), $result->getResults());
-
-        $result = $parser->parse($target, $result);
-
-        $this->assertNotNull($result);
-        $this->assertEquals("a", $result->getString());
-
-        $this->assertEquals(array(
-            new ConstantExpressionResult("a"),
-        ), $result->getResults());
-
-        $result = $parser->parse($target, $result);
-
-        $this->assertNotNull($result);
-        $this->assertEquals("", $result->getString());
-
-        $this->assertCount(0, $result->getResults());
-
-        $result = $parser->parse($target, $result);
-        $this->assertNull($result);
-    }
-
     public function testRecursive() {
         $parser = ParserHelper::compile(new JoinedExpression(new JoinedExpression(new ConstantExpression("a"), new ConstantExpression(",")), new ConstantExpression(",")));
 

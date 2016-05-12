@@ -29,15 +29,5 @@ class ConcatenatedExpressionResultRewriter implements ExpressionResultRewriterIn
         }
         return new ConcatenatedExpressionResult($rewritten_parts);
     }
-
-    public function rewriteExpressionResult(ExpressionResultInterface $result)
-    {
-        /** @var ConcatenatedExpressionResult $result */
-        $rewritten_parts = array();
-        foreach ($result->getParts() as $key => $result) {
-            $rewritten_parts[$key] = $this->part_rewriters[$key]->rewriteExpressionResult($result);
-        }
-        return new ConcatenatedExpressionResult($rewritten_parts);
-    }
-
+    
 }
