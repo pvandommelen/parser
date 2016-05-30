@@ -76,7 +76,7 @@ class MultipleExpressionRewriter implements ExpressionRewriterInterface
     public function canRewrite(ExpressionInterface $expression)
     {
         if ($expression instanceof LazyResult) {
-            return null;
+            return false;
         }
         $expression = $this->resolveArgument($expression);
 
@@ -90,6 +90,10 @@ class MultipleExpressionRewriter implements ExpressionRewriterInterface
 
     public function rewriteExpression(ExpressionInterface $expression)
     {
+        if ($this->canRewrite($expression) === false) {
+            return new RewrittenExpressionContainer($expression, new TerminateExpressionResultRewriter());
+        }
+        
         $expression = $this->resolveArgument($expression);
         
         if ($this->expression_cache->has($expression) === false) {
