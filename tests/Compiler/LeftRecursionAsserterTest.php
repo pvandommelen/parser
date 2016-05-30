@@ -86,4 +86,16 @@ class LeftRecursionAsserterTest extends \PHPUnit_Framework_TestCase
 
         $this->getChecker()->assertExpression($expression);
     }
+
+    public function testInfiniteRecursionWithinAlternative() {
+        $this->expectException(InvalidExpressionException::class);
+
+        $expression = null;
+        $expression = new AlternativeExpression(array(
+            "empty" => new ConstantExpression(""),
+            "next" => &$expression,
+        ));
+
+        $this->getChecker()->assertExpression($expression);
+    }
 }

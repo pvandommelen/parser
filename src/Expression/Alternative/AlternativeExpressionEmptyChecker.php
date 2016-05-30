@@ -17,12 +17,12 @@ class AlternativeExpressionEmptyChecker implements PotentiallyEmptyCheckerInterf
     public function isPotentiallyEmpty(ExpressionInterface $expression)
     {
         /** @var $expression AlternativeExpression */
+        $potentially_empty = false;
         foreach ($expression->getAlternatives() as $alternative) {
-            if ($this->getRecursiveHandler()->isPotentiallyEmpty($alternative) === true) {
-                return true;
-            }
+            $alternative_is_potentially_empty = $this->getRecursiveHandler()->isPotentiallyEmpty($alternative) === true;
+            $potentially_empty = $potentially_empty || $alternative_is_potentially_empty;
         }
-        return false;
+        return $potentially_empty;
     }
 
 
