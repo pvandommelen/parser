@@ -22,17 +22,6 @@ class NotTest extends \PHPUnit_Framework_TestCase
         $result = $parser->parse("abc");
         $this->assertNotNull($result);
         $this->assertEquals("ab", $result->getString());
-
-        $result = $parser->parse("abc", $result);
-        $this->assertNotNull($result);
-        $this->assertEquals("a", $result->getString());
-
-        $result = $parser->parse("abc", $result);
-        $this->assertNotNull($result);
-        $this->assertEquals("", $result->getString());
-
-        $result = $parser->parse("abc", $result);
-        $this->assertNull($result);
     }
 
     public function testMultiple() {
@@ -46,13 +35,6 @@ class NotTest extends \PHPUnit_Framework_TestCase
         $result = $parser->parse("abc");
         $this->assertNotNull($result);
         $this->assertEquals("a", $result->getString());
-
-        $result = $parser->parse("abc", $result);
-        $this->assertNotNull($result);
-        $this->assertEquals("", $result->getString());
-
-        $result = $parser->parse("abc", $result);
-        $this->assertNull($result);
     }
 
     public function testEscapedString() {
@@ -80,9 +62,6 @@ class NotTest extends \PHPUnit_Framework_TestCase
         $result = $parser->parse($target);
         $this->assertNotNull($result);
         $this->assertEquals('"ab\"cd\e"', $result->getString());
-
-        $result = $parser->parse($target, $result);
-        $this->assertNull($result);
     }
 
     public function testUtf8() {

@@ -12,6 +12,7 @@ use PeterVanDommelen\Parser\Expression\Not\NotExpression;
 use PeterVanDommelen\Parser\Expression\Regex\RegexExpression;
 use PeterVanDommelen\Parser\Expression\Regex\RegexParser;
 use PeterVanDommelen\Parser\Expression\Repeater\RepeaterExpression;
+use PeterVanDommelen\Parser\Parser\StringInputStream;
 use PeterVanDommelen\Parser\Parser\ParserInterface;
 
 class PerformanceTest extends \PHPUnit_Framework_TestCase
@@ -63,22 +64,26 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
     }
     
     public function testConstantParser() {
+        $n = 1000000;
         $expression = new RepeaterExpression(new ConstantExpression("aa"));
-        $target = str_repeat("a", 100000);
+        $target = str_repeat("aa", $n);
 
         $parser = ParserHelper::compile($expression);
 
         $result = $parser->parse($target);
+        $this->assertCount($n, $result->getResults());
         //var_dump(memory_get_peak_usage(true) / 1000000);
     }
 
     public function testConstantParserSingleChar() {
+        $n = 1000000;
         $expression = new RepeaterExpression(new ConstantExpression("a"));
-        $target = str_repeat("a", 100000);
+        $target = str_repeat("a", $n);
 
         $parser = ParserHelper::compile($expression);
 
         $result = $parser->parse($target);
+        $this->assertCount($n, $result->getResults());
 //        var_dump(memory_get_peak_usage(true) / 1000000);
     }
 }

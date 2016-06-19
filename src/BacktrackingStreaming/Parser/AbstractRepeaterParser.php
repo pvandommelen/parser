@@ -1,14 +1,14 @@
 <?php
 
 
-namespace PeterVanDommelen\Parser\Expression\Repeater;
+namespace PeterVanDommelen\Parser\BacktrackingStreaming\Parser;
 
 
-use PeterVanDommelen\Parser\Parser\ParserInterface;
+use PeterVanDommelen\Parser\BacktrackingStreaming\BacktrackingStreamingParserInterface;
 
-abstract class AbstractRepeaterParser implements ParserInterface
+abstract class AbstractRepeaterParser implements BacktrackingStreamingParserInterface
 {
-    /** @var ParserInterface */
+    /** @var BacktrackingStreamingParserInterface */
     protected $inner;
 
     /** @var int */
@@ -18,11 +18,11 @@ abstract class AbstractRepeaterParser implements ParserInterface
     protected $maximum;
 
     /**
-     * @param ParserInterface $inner
+     * @param BacktrackingStreamingParserInterface $inner
      * @param int $minimum
      * @param int|null $maximum
      */
-    public function __construct(ParserInterface $inner, $minimum = 0, $maximum = null)
+    public function __construct(BacktrackingStreamingParserInterface $inner, $minimum = 0, $maximum = null)
     {
         if (is_int($minimum) === false || $minimum < 0) {
             throw new \Exception("Minimum should be a positive integer");

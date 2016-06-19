@@ -7,24 +7,26 @@ namespace PeterVanDommelen\Parser;
 use PeterVanDommelen\Parser\Asserter\HasNoEmptyRepeaterAsserter;
 use PeterVanDommelen\Parser\Asserter\HasNoLeftRecursionAsserter;
 use PeterVanDommelen\Parser\Asserter\MultipleAsserter;
+use PeterVanDommelen\Parser\BacktrackingStreaming\Adapter\BacktrackingStreamingToStringCompilerAdapter;
+use PeterVanDommelen\Parser\BacktrackingStreaming\Adapter\StringToBacktrackingStreamingCompilerAdapter;
 use PeterVanDommelen\Parser\Compiler\AsserterCompiler;
-use PeterVanDommelen\Parser\Compiler\Compiler;
+use PeterVanDommelen\Parser\BacktrackingStreaming\BacktrackingStreamingCompiler;
 use PeterVanDommelen\Parser\Compiler\RewriterCompiler;
 use PeterVanDommelen\Parser\Expression\Alternative\AlternativeExpression;
-use PeterVanDommelen\Parser\Expression\Alternative\AlternativeExpressionCompiler;
+use PeterVanDommelen\Parser\BacktrackingStreaming\Compiler\AlternativeExpressionCompiler;
 use PeterVanDommelen\Parser\Expression\Alternative\AlternativeExpressionEmptyChecker;
 use PeterVanDommelen\Parser\Expression\Alternative\AlternativeExpressionFlattener;
 use PeterVanDommelen\Parser\Expression\Alternative\AlternativeExpressionRewriter;
 use PeterVanDommelen\Parser\Expression\Any\AnyExpression;
 use PeterVanDommelen\Parser\Expression\Concatenated\ConcatenatedExpression;
-use PeterVanDommelen\Parser\Expression\Concatenated\ConcatenatedExpressionCompiler;
+use PeterVanDommelen\Parser\BacktrackingStreaming\Compiler\ConcatenatedExpressionCompiler;
 use PeterVanDommelen\Parser\Expression\Concatenated\ConcatenatedExpressionEmptyChecker;
 use PeterVanDommelen\Parser\Expression\Concatenated\ConcatenatedExpressionFlattener;
 use PeterVanDommelen\Parser\Expression\Concatenated\ConcatenatedExpressionRewriter;
 use PeterVanDommelen\Parser\Expression\Constant\ConstantExpression;
-use PeterVanDommelen\Parser\Expression\Constant\ConstantExpressionCompiler;
+use PeterVanDommelen\Parser\BacktrackingStreaming\Compiler\ConstantExpressionCompiler;
 use PeterVanDommelen\Parser\Expression\Constant\ConstantExpressionEmptyChecker;
-use PeterVanDommelen\Parser\Expression\EndOfString\EndOfStringCompiler;
+use PeterVanDommelen\Parser\BacktrackingStreaming\Compiler\EndOfStringCompiler;
 use PeterVanDommelen\Parser\Expression\EndOfString\EndOfStringEmptyChecker;
 use PeterVanDommelen\Parser\Expression\EndOfString\EndOfStringExpression;
 use PeterVanDommelen\Parser\Expression\ExpressionInterface;
@@ -34,7 +36,7 @@ use PeterVanDommelen\Parser\Expression\Named\Grammar;
 use PeterVanDommelen\Parser\Expression\Named\NamedExpression;
 use PeterVanDommelen\Parser\Expression\Named\NamedExpressionRewriter;
 use PeterVanDommelen\Parser\Expression\Not\NotExpression;
-use PeterVanDommelen\Parser\Expression\Not\NotExpressionCompiler;
+use PeterVanDommelen\Parser\BacktrackingStreaming\Compiler\NotExpressionCompiler;
 use PeterVanDommelen\Parser\Expression\Not\NotExpressionEmptyChecker;
 use PeterVanDommelen\Parser\Expression\Not\NotExpressionFlattener;
 use PeterVanDommelen\Parser\Expression\Not\NotExpressionRewriter;
@@ -42,7 +44,7 @@ use PeterVanDommelen\Parser\Expression\Regex\RegexExpression;
 use PeterVanDommelen\Parser\Expression\Regex\RegexExpressionCompiler;
 use PeterVanDommelen\Parser\Expression\Regex\RegexExpressionEmptyChecker;
 use PeterVanDommelen\Parser\Expression\Repeater\RepeaterExpression;
-use PeterVanDommelen\Parser\Expression\Repeater\RepeaterExpressionCompiler;
+use PeterVanDommelen\Parser\BacktrackingStreaming\Compiler\RepeaterExpressionCompiler;
 use PeterVanDommelen\Parser\Expression\Repeater\RepeaterExpressionEmptyChecker;
 use PeterVanDommelen\Parser\Expression\Repeater\RepeaterExpressionFlattener;
 use PeterVanDommelen\Parser\Expression\Repeater\RepeaterExpressionRewriter;
@@ -53,7 +55,6 @@ use PeterVanDommelen\Parser\Parser\ParserInterface;
 use PeterVanDommelen\Parser\PotentiallyEmptyChecker\PotentiallyEmptyChecker;
 use PeterVanDommelen\Parser\PotentiallyEmptyChecker\PotentiallyEmptyCheckerInterface;
 use PeterVanDommelen\Parser\Rewriter\MultipleExpressionRewriter;
-use PeterVanDommelen\Parser\Rewriter\TerminateExpressionRewriter;
 use PeterVanDommelen\Parser\Simplifier\AlternativeSimplifier;
 use PeterVanDommelen\Parser\Simplifier\ConcatenatedFlattenSimplifier;
 use PeterVanDommelen\Parser\Simplifier\ConcatenatedSimplifier;
@@ -131,7 +132,7 @@ class ParserHelper
             AlternativeExpression::class => new AlternativeExpressionCompiler(),
             ConcatenatedExpression::class => new ConcatenatedExpressionCompiler(),
             RepeaterExpression::class => new RepeaterExpressionCompiler(),
-            RegexExpression::class => new RegexExpressionCompiler(),
+            RegexExpression::class => new StringToBacktrackingStreamingCompilerAdapter(new RegexExpressionCompiler()),
             AnyExpression::class => new NotExpressionCompiler($encoding),
             NotExpression::class => new NotExpressionCompiler($encoding),
             EndOfStringExpression::class => new EndOfStringCompiler(),
@@ -141,7 +142,7 @@ class ParserHelper
     }
 
     private static function createCompiler(Grammar $grammar = null) {
-        $compiler = new Compiler(self::createCompilerMap());
+        $compiler = new BacktrackingStreamingToStringCompilerAdapter(new BacktrackingStreamingCompiler(self::createCompilerMap()));
 
         $expression_flattener = self::createFlattener();
         $potentially_empty_checker = self::createEmptyChecker();

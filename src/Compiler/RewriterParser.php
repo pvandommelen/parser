@@ -5,6 +5,7 @@ namespace PeterVanDommelen\Parser\Compiler;
 
 
 use PeterVanDommelen\Parser\Expression\ExpressionResultInterface;
+use PeterVanDommelen\Parser\Parser\InputStreamInterface;
 use PeterVanDommelen\Parser\Parser\ParserInterface;
 use PeterVanDommelen\Parser\Rewriter\ExpressionResultRewriterInterface;
 
@@ -26,12 +27,9 @@ class RewriterParser implements ParserInterface
         $this->result_rewriter = $result_rewriter;
     }
 
-    public function parse($string, ExpressionResultInterface $previous_result = null)
+    public function parse($string)
     {
-        if ($previous_result !== null) {
-            throw new \Exception("Cannot backtrack a rewritten expression");
-        }
-        $result = $this->parser->parse($string, $previous_result);
+        $result = $this->parser->parse($string);
 
         if ($result === null) {
             return null;

@@ -1,14 +1,16 @@
 <?php
 
 
-namespace PeterVanDommelen\Parser\Compiler;
+namespace PeterVanDommelen\Parser\BacktrackingStreaming;
 
 
+use PeterVanDommelen\Parser\BacktrackingStreaming\Parser\LazyParser;
+use PeterVanDommelen\Parser\Compiler\CompilerInterface;
 use PeterVanDommelen\Parser\Expression\ExpressionInterface;
 use PeterVanDommelen\Parser\Handler\Cache;
 use PeterVanDommelen\Parser\Handler\ClassMapHandler;
 
-class Compiler extends ClassMapHandler implements CompilerInterface
+class BacktrackingStreamingCompiler extends ClassMapHandler implements BacktrackingStreamingCompilerInterface
 {
     private $cache;
 
@@ -20,7 +22,7 @@ class Compiler extends ClassMapHandler implements CompilerInterface
 
     protected function getInterfaceName()
     {
-        return CompilerInterface::class;
+        return BacktrackingStreamingCompilerInterface::class;
     }
 
     public function compile(ExpressionInterface $expression)

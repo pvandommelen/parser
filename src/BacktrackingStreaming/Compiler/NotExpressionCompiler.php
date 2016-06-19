@@ -1,15 +1,18 @@
 <?php
 
 
-namespace PeterVanDommelen\Parser\Expression\Not;
+namespace PeterVanDommelen\Parser\BacktrackingStreaming\Compiler;
 
 
+use PeterVanDommelen\Parser\BacktrackingStreaming\BacktrackingStreamingCompilerInterface;
 use PeterVanDommelen\Parser\Compiler\CompilerInterface;
 use PeterVanDommelen\Parser\Expression\ExpressionInterface;
+use PeterVanDommelen\Parser\Expression\Not\NotExpression;
+use PeterVanDommelen\Parser\BacktrackingStreaming\Parser\NotParser;
 use PeterVanDommelen\Parser\Handler\RecursionAwareInterface;
 use PeterVanDommelen\Parser\Handler\RecursionAwareTrait;
 
-class NotExpressionCompiler implements CompilerInterface, RecursionAwareInterface
+class NotExpressionCompiler implements BacktrackingStreamingCompilerInterface, RecursionAwareInterface
 {
     use RecursionAwareTrait;
 

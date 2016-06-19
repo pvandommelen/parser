@@ -1,16 +1,17 @@
 <?php
 
 
-namespace PeterVanDommelen\Parser\Expression\Concatenated;
+namespace PeterVanDommelen\Parser\BacktrackingStreaming\Parser;
 
 
+use PeterVanDommelen\Parser\Expression\Concatenated\ConcatenatedExpressionResult;
 use PeterVanDommelen\Parser\Expression\ExpressionResultInterface;
-use PeterVanDommelen\Parser\Parser\ParserInterface;
-use PeterVanDommelen\Parser\Parser\StringUtil;
+use PeterVanDommelen\Parser\BacktrackingStreaming\BacktrackingStreamingParserInterface;
+use PeterVanDommelen\Parser\Parser\InputStreamInterface;
 
-class ConcatenatedParser implements ParserInterface
+class ConcatenatedParser implements BacktrackingStreamingParserInterface
 {
-    /** @var ParserInterface[] */
+    /** @var BacktrackingStreamingParserInterface[] */
     private $parts;
 
     private $index_to_key;
@@ -18,7 +19,7 @@ class ConcatenatedParser implements ParserInterface
     private $key_to_index;
 
     /**
-     * @param ParserInterface[] $parts
+     * @param BacktrackingStreamingParserInterface[] $parts
      */
     public function __construct(array $parts)
     {
@@ -27,7 +28,7 @@ class ConcatenatedParser implements ParserInterface
         $this->parts = array_values($parts);
     }
 
-    public function parse($string, ExpressionResultInterface $previous_result = null)
+    public function parseInputStreamWithBacktracking(InputStreamInterface $input, ExpressionResultInterface $previous_result = null)
     {
         if ($previous_result !== null && $previous_result instanceof ConcatenatedExpressionResult === false) {
             throw new \Exception("Expected " . ConcatenatedExpressionResult::class);
@@ -41,6 +42,7 @@ class ConcatenatedParser implements ParserInterface
             for ($i = 0; $i < count($this->parts); $i += 1) {
                 $position += $part_results[$i]->getLength();
             }
+            $input->move($position);
         } else {
             $part_results = array_fill(0, count($this->parts), null);
             $index = 0;
@@ -50,13 +52,15 @@ class ConcatenatedParser implements ParserInterface
             $part = $this->parts[$index];
 
             if ($part_results[$index] !== null) {
+                $input->move(-$part_results[$index]->getLength());
                 $position -= $part_results[$index]->getLength();
             }
 
-            $part_result = $part->parse(StringUtil::slice($string, $position), $part_results[$index]);
+            $part_result = $part->parseInputStreamWithBacktracking($input, $part_results[$index]);
 
             if ($part_result === null) {
                 if ($index === 0) {
+                    $input->move(-$position);
                     return null;
                 }
                 $part_results[$index] = $part_result;
@@ -72,4 +76,6 @@ class ConcatenatedParser implements ParserInterface
 
         return new ConcatenatedExpressionResult($corrected_part_results);
     }
+
+
 }

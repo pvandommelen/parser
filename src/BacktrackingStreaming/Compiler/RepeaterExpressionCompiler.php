@@ -1,15 +1,18 @@
 <?php
 
 
-namespace PeterVanDommelen\Parser\Expression\Repeater;
+namespace PeterVanDommelen\Parser\BacktrackingStreaming\Compiler;
 
 
+use PeterVanDommelen\Parser\BacktrackingStreaming\BacktrackingStreamingCompilerInterface;
+use PeterVanDommelen\Parser\BacktrackingStreaming\Parser\GreedyRepeaterParser;
+use PeterVanDommelen\Parser\BacktrackingStreaming\Parser\LazyRepeaterParser;
 use PeterVanDommelen\Parser\Compiler\CompilerInterface;
 use PeterVanDommelen\Parser\Expression\ExpressionInterface;
 use PeterVanDommelen\Parser\Handler\RecursionAwareInterface;
 use PeterVanDommelen\Parser\Handler\RecursionAwareTrait;
 
-class RepeaterExpressionCompiler implements CompilerInterface, RecursionAwareInterface
+class RepeaterExpressionCompiler implements BacktrackingStreamingCompilerInterface, RecursionAwareInterface
 {
     use RecursionAwareTrait;
 

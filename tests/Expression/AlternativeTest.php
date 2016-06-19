@@ -5,6 +5,7 @@ namespace PeterVanDommelen\Parser\Expression;
 
 
 use PeterVanDommelen\Parser\Expression\Alternative\AlternativeExpression;
+use PeterVanDommelen\Parser\Expression\Concatenated\ConcatenatedExpression;
 use PeterVanDommelen\Parser\Expression\Constant\ConstantExpression;
 use PeterVanDommelen\Parser\ParserHelper;
 
@@ -66,27 +67,19 @@ class AlternativeTest extends \PHPUnit_Framework_TestCase
     public function testBacktrack() {
         $target = "abcde";
 
-        $parser = ParserHelper::compile(new AlternativeExpression(array(
-            new ConstantExpression("abc"),
-            new ConstantExpression("ab"),
-            new ConstantExpression("a"),
+        $parser = ParserHelper::compile(new ConcatenatedExpression(array(
+            new AlternativeExpression(array(
+                new ConstantExpression("abc"),
+                new ConstantExpression("ab"),
+                new ConstantExpression("a"),
+            )),
+            new ConstantExpression("b")
         )));
 
         $result = $parser->parse($target);
 
         $this->assertNotNull($result);
-        $this->assertEquals(0, $result->getKey());
-
-        $result = $parser->parse($target, $result);
-        $this->assertNotNull($result);
-        $this->assertEquals(1, $result->getKey());
-
-        $result = $parser->parse($target, $result);
-        $this->assertNotNull($result);
-        $this->assertEquals(2, $result->getKey());
-
-        $result = $parser->parse($target, $result);
-        $this->assertNull($result);
+        $this->assertEquals(2, $result->getPart(0)->getKey());
     }
 
     public function testAlternativeKey() {

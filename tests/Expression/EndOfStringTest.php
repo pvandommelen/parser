@@ -15,10 +15,9 @@ class EndOfStringTest extends \PHPUnit_Framework_TestCase
 
         $result = $parser->parse("");
         $this->assertNotNull($result);
-        $result = $parser->parse("", $result);
-        $this->assertNull($result);
+        $this->assertEquals("", $result->getString());
 
-        $result = $parser->parse("abc");
+        $result = $parser->parse("a");
         $this->assertNull($result);
     }
 }

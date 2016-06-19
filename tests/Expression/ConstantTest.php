@@ -21,8 +21,6 @@ class ConstantTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(3, $result->getLength());
         $this->assertEquals("abc", $result->getString());
-
-        $this->assertNull($parser->parse($target, $result));
     }
 
     public function testStringDoesNotMatch() {

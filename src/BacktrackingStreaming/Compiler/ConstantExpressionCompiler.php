@@ -1,13 +1,16 @@
 <?php
 
 
-namespace PeterVanDommelen\Parser\Expression\Constant;
+namespace PeterVanDommelen\Parser\BacktrackingStreaming\Compiler;
 
 
+use PeterVanDommelen\Parser\BacktrackingStreaming\BacktrackingStreamingCompilerInterface;
+use PeterVanDommelen\Parser\BacktrackingStreaming\Parser\ConstantParser;
+use PeterVanDommelen\Parser\BacktrackingStreaming\Parser\SingleByteParser;
 use PeterVanDommelen\Parser\Compiler\CompilerInterface;
 use PeterVanDommelen\Parser\Expression\ExpressionInterface;
 
-class ConstantExpressionCompiler implements CompilerInterface
+class ConstantExpressionCompiler implements BacktrackingStreamingCompilerInterface
 {
     public function compile(ExpressionInterface $expression)
     {

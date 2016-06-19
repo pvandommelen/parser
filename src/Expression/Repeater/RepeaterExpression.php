@@ -34,10 +34,10 @@ class RepeaterExpression implements ExpressionInterface
         if (is_int($minimum) === false || $minimum < 0) {
             throw new \Exception("Minimum should be a positive integer");
         }
-        if ($maximum === null) {
-            $maximum = PHP_INT_MAX;
+        if ($maximum !== null && is_int($maximum) === false) {
+            throw new \Exception("Maximum should be null or an integer");
         }
-        if (is_int($maximum) === false || $maximum < $minimum) {
+        if (is_int($maximum) === true && $maximum < $minimum) {
             throw new \Exception("Maximum should be an integer larger than minimum");
         }
 
@@ -72,7 +72,7 @@ class RepeaterExpression implements ExpressionInterface
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getMaximum()
     {

@@ -10,8 +10,7 @@ interface ParserInterface
 {
     /**
      * @param string $string
-     * @param ExpressionResultInterface|null $previous_result
-     * @return ExpressionResultInterface
+     * @return ExpressionResultInterface|null
      */
-    public function parse($string, ExpressionResultInterface $previous_result = null);
+    public function parse($string);
 }

@@ -31,9 +31,14 @@ class JoinedExpressionRewriter implements ExpressionRewriterInterface, Recursion
 
         $repeater_part = new ConcatenatedExpression(array($rewritten_seperator_expression->getExpression(), $rewritten_inner_expression->getExpression()));
 
+        $maximum = $expression->getMaximum();
+        if ($maximum !== null) {
+            $maximum = $maximum - 1;
+        }
+
         $maybe_part = new ConcatenatedExpression(array(
             $rewritten_inner_expression->getExpression(),
-            new RepeaterExpression($repeater_part, $expression->isLazy(), max(0, $expression->getMinimum() - 1), $expression->getMaximum() - 1)
+            new RepeaterExpression($repeater_part, $expression->isLazy(), max(0, $expression->getMinimum() - 1), $maximum)
         ));
 
         return new RewrittenExpressionContainer(new AlternativeExpression(array(
