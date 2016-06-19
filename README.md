@@ -15,9 +15,9 @@ Unless you are extending the parser (not described in this document) you should 
 
 These methods accept an expression (see below which ones are available) and maybe a grammar (see below). The return value is the parser which offers one method:
 
-    PeterVanDommelen\Parser\Parser\ParserInterface::parse(string $string, ExpressionResultInterface $previous_result = null)
+    PeterVanDommelen\Parser\Parser\ParserInterface::parse(string $string)
 
-The parse method will return null if the parser was unable to match the string. The parser will always match from the start. If succesfully matched a result object representing the parsed expression will be returned. This result object can be used as the second argument in the parse method to 'backtrack' through different results.
+The parse method will return null if the parser was unable to match the string. The parser will always match from the start. If succesfully matched a result object corresponding to the parsed expression will be returned.
 
 The result object implements ExpressionResultInterface which has the following two methods describing the matched string:
 
