@@ -86,4 +86,18 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
         $this->assertCount($n, $result->getResults());
 //        var_dump(memory_get_peak_usage(true) / 1000000);
     }
+
+    public function testAlternativeRepeat() {
+        $n = 1000000;
+        $expression = new RepeaterExpression(new AlternativeExpression(array(
+            new ConstantExpression("a"),
+            new ConstantExpression("b")
+        )));
+        $target = str_repeat("a", $n);
+
+        $parser = ParserHelper::compile($expression);
+
+        $result = $parser->parse($target);
+        $this->assertCount($n, $result->getResults());
+    }
 }

@@ -55,8 +55,19 @@ class GreedyRepeaterParser extends AbstractRepeaterParser
         $part_results = array();
         $position = 0;
 
+        /** @var string|null $previous_part_result */
+        $previous_part_result_string = null;
+        /** @var ExpressionResultInterface|null $previous_part_result */
+        $previous_part_result = null;
+
         while (count($part_results) < $this->maximum) {
-            $current_part_result = $this->inner->parseInputStreamWithBacktracking($input, null);
+            if ($previous_part_result !== null && $input->matchesString($previous_part_result_string) === true) {
+                //the previous match will work
+                $current_part_result = $previous_part_result;
+                $input->move(strlen($previous_part_result_string));
+            } else {
+                $current_part_result = $this->inner->parseInputStreamWithBacktracking($input, null);
+            }
 
             if ($current_part_result === null) {
                 break;
@@ -64,6 +75,8 @@ class GreedyRepeaterParser extends AbstractRepeaterParser
 
             $part_results[] = $current_part_result;
             $position += $current_part_result->getLength();
+            $previous_part_result = $current_part_result;
+            $previous_part_result_string = $previous_part_result->getString();
         }
 
         if (count($part_results) < $this->minimum) {
