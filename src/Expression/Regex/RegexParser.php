@@ -21,7 +21,7 @@ class RegexParser implements ParserInterface
 
     private static function wrapRegex($regex) {
         $regex = str_replace('/', '\\/', $regex);
-        $regex = "/^(?:" . $regex . ")/s";
+        $regex = "/^(?:" . $regex . ")/su";
         return $regex;
     }
 

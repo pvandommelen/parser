@@ -81,4 +81,12 @@ class RegexParserTest extends \PHPUnit_Framework_TestCase
         $result = $parser->parse("acd");
         $this->assertNull($result);
     }
+
+    public function testUtf8() {
+        $parser = ParserHelper::compile(new RegexExpression("."));
+
+        $result = $parser->parse("€");
+        $this->assertNotNull($result);
+        $this->assertEquals("€", $result->getString());
+    }
 }
