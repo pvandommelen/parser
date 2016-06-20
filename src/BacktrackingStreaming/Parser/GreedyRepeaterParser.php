@@ -4,6 +4,7 @@
 namespace PeterVanDommelen\Parser\BacktrackingStreaming\Parser;
 
 
+use PeterVanDommelen\Parser\BacktrackingStreaming\LowMemoryArrayIterator;
 use PeterVanDommelen\Parser\BacktrackingStreaming\Parser\AbstractRepeaterParser;
 use PeterVanDommelen\Parser\Expression\ExpressionResultInterface;
 use PeterVanDommelen\Parser\Expression\Repeater\RepeaterExpressionResult;
@@ -13,7 +14,7 @@ use PeterVanDommelen\Parser\Parser\StringUtil;
 class GreedyRepeaterParser extends AbstractRepeaterParser
 {
     private function parseWithPreviousResult(InputStreamInterface $input, RepeaterExpressionResult $previous_result) {
-        $part_results = $previous_result->getResults();
+        $part_results = iterator_to_array($previous_result->getResults());
         $length = count($part_results);
 
         if ($length === 0) {
@@ -37,12 +38,12 @@ class GreedyRepeaterParser extends AbstractRepeaterParser
                 $input->move(-$position);
                 return null;
             }
-            return new RepeaterExpressionResult(array_slice($part_results, 0, $index));
+            return new RepeaterExpressionResult(new \ArrayIterator(array_slice($part_results, 0, $index)));
         }
 
         //replace the entry
         $part_results[$index] = $last_part;
-        return new RepeaterExpressionResult($part_results);
+        return new RepeaterExpressionResult(new \ArrayIterator($part_results));
     }
 
     public function parseInputStreamWithBacktracking(InputStreamInterface $input, ExpressionResultInterface $previous_result = null)
@@ -52,22 +53,11 @@ class GreedyRepeaterParser extends AbstractRepeaterParser
             return $this->parseWithPreviousResult($input, $previous_result);
         }
 
-        $part_results = array();
+        $part_results = new \ArrayIterator();
         $position = 0;
 
-        /** @var string|null $previous_part_result */
-        $previous_part_result_string = null;
-        /** @var ExpressionResultInterface|null $previous_part_result */
-        $previous_part_result = null;
-
         while (count($part_results) < $this->maximum) {
-            if ($previous_part_result !== null && $input->matchesString($previous_part_result_string) === true) {
-                //the previous match will work
-                $current_part_result = $previous_part_result;
-                $input->move(strlen($previous_part_result_string));
-            } else {
-                $current_part_result = $this->inner->parseInputStreamWithBacktracking($input, null);
-            }
+            $current_part_result = $this->inner->parseInputStreamWithBacktracking($input, null);
 
             if ($current_part_result === null) {
                 break;
@@ -75,8 +65,6 @@ class GreedyRepeaterParser extends AbstractRepeaterParser
 
             $part_results[] = $current_part_result;
             $position += $current_part_result->getLength();
-            $previous_part_result = $current_part_result;
-            $previous_part_result_string = $previous_part_result->getString();
         }
 
         if (count($part_results) < $this->minimum) {

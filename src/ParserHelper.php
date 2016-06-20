@@ -7,6 +7,7 @@ namespace PeterVanDommelen\Parser;
 use PeterVanDommelen\Parser\Asserter\HasNoEmptyRepeaterAsserter;
 use PeterVanDommelen\Parser\Asserter\HasNoLeftRecursionAsserter;
 use PeterVanDommelen\Parser\Asserter\MultipleAsserter;
+use PeterVanDommelen\Parser\BacktrackingRemover\ConstantSplitter;
 use PeterVanDommelen\Parser\BacktrackingStreaming\Adapter\BacktrackingStreamingToStringCompilerAdapter;
 use PeterVanDommelen\Parser\BacktrackingStreaming\Adapter\StringToBacktrackingStreamingCompilerAdapter;
 use PeterVanDommelen\Parser\Compiler\AsserterCompiler;
@@ -106,6 +107,9 @@ class ParserHelper
         return array_merge($extra, array(
             //special
             new JoinedExpressionRewriter(),
+
+            //backtracking removers
+//            new ConstantSplitter(),
 
             //optimizers
             new ConcatenatedSimplifier(),

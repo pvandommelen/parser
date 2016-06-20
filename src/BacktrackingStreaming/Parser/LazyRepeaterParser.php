@@ -73,7 +73,7 @@ class LazyRepeaterParser extends AbstractRepeaterParser
             return null;
         }
 
-        return new RepeaterExpressionResult($part_results);
+        return new RepeaterExpressionResult(new \ArrayIterator($part_results));
     }
 
 }

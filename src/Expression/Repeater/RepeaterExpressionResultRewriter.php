@@ -26,7 +26,7 @@ class RepeaterExpressionResultRewriter implements ExpressionResultRewriterInterf
     public function reverseRewriteExpressionResult(ExpressionResultInterface $result)
     {
         /** @var RepeaterExpressionResult $result */
-        return new RepeaterExpressionResult(array_map(array($this->inner_rewriter, "reverseRewriteExpressionResult"), $result->getResults()));
+        return new RepeaterExpressionResult(new \ArrayIterator(array_map(array($this->inner_rewriter, "reverseRewriteExpressionResult"), iterator_to_array($result->getResults()))));
     }
 
 }

@@ -12,15 +12,15 @@ class RepeaterExpressionResult implements ExpressionResultInterface
     private $results;
 
     /**
-     * @param ExpressionResultInterface[] $results
+     * @param ExpressionResultInterface[]|\Iterator $results
      */
-    public function __construct(array $results)
+    public function __construct(\Iterator $results)
     {
         $this->results = $results;
     }
 
     /**
-     * @return ExpressionResultInterface[]
+     * @return ExpressionResultInterface[]|\Iterator
      */
     public function getResults()
     {

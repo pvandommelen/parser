@@ -88,7 +88,7 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testAlternativeRepeat() {
-        $n = 1000000;
+        $n = 500000;
         $expression = new RepeaterExpression(new AlternativeExpression(array(
             new ConstantExpression("a"),
             new ConstantExpression("b")
