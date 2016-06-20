@@ -1,14 +1,14 @@
-A recursive descent parser written in PHP.
+A parser generator written in PHP.
 
 ## Features
 Supports backtracking.
 
-Supports left recursion detection.
+Detects left recursion.
 
 Directly matches strings so it contains no lexing (tokenizer) step
 
 ## General usage
-Unless you are extending the parser (not described in this document) you should use the available helper class and its static methods:
+The available helper class and its static methods should be used:
 
     PeterVanDommelen\Parser\ParserHelper::compile(ExpressionInterface $expression)
     PeterVanDommelen\Parser\ParserHelper::compileWithGrammar(ExpressionInterface $expression, Grammar $grammar)

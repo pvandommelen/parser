@@ -1,6 +1,7 @@
 {
     "name": "pvandommelen/parser",
-    "description": "A recursive descent parser for PHP",
+    "description": "A parser generator for PHP",
+    "keywords": ["parser", "generator"],
     "require": {
         "php": "~5.5 || ~7.0",
         "ext-mbstring": "*"
